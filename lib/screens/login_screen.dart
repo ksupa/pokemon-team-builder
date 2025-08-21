@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pokemon_team_builder/screens/signup_screen.dart';
 import '../services/auth_service.dart';
+import 'test_search_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -128,6 +129,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextButton(
                   onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen())),
                   child: const Text('Create an account'),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Test button (temporary)
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TestSearchScreen()),
+                  );
+                },
+                child: const Text('Test Pokemon Search'),
               ),
             ],
           )

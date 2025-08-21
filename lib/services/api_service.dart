@@ -70,6 +70,22 @@ class ApiService {
     return pokemonList;
   }
 
+  Future<Pokemon?> getPokemonByName(String name) async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/pokemon/${name.toLowerCase()}'));
+
+      if(response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return Pokemon.fromJson(data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error loading $name: $e');
+      return null;
+    }
+  }
+
   List<String> _filterPokemonNames(List<String> allNames, String query) {
     String lowerCaseQuery = query.toLowerCase();
 
