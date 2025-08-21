@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import '../models/pokemon.dart';
 import 'pokemon_card.dart';
+import '../models/team.dart';
 
 class ResultsArea extends StatelessWidget {
   final List<Pokemon> searchResults;
   final bool isLoading;
   final String? errorMessage;
+  final bool isTeamBuildingMode;
+  final Team? currentTeam;
+  final Function(Pokemon)? onPokemonSelected;
 
   const ResultsArea({
     super.key,
     required this.searchResults,
     required this.isLoading,
     this.errorMessage,
+    this.isTeamBuildingMode = false,
+    this.currentTeam,
+    this.onPokemonSelected,
   });
 
   @override
@@ -44,8 +51,22 @@ class ResultsArea extends StatelessWidget {
     return ListView.builder(
         itemCount: searchResults.length,
         itemBuilder: (context, index) {
-          return PokemonCard(pokemon: searchResults[index]);
-      },
+          final pokemon = searchResults[index];
+
+          // Check if Pokemon is already in team (for team building mode)
+          final isAlreadyInTeam = isTeamBuildingMode &&
+            currentTeam != null &&
+            currentTeam!.containsPokemon(pokemon);
+
+          return PokemonCard(
+            pokemon: pokemon,
+            isTeamBuildingMode: isTeamBuildingMode,
+            isAlreadyInTeam: isAlreadyInTeam,
+            onAddToTeam: isAlreadyInTeam ? null : () {
+              onPokemonSelected?.call(pokemon);
+            },
+          );
+        },
     );
   }
 }

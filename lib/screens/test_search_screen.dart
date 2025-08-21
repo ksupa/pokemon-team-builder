@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon_team_builder/services/api_service.dart';
 import '../models/pokemon.dart';
-import '../widgets/pokemon_card.dart';
 import '../widgets/results_area.dart';
+import '../models/team.dart';
 
 class TestSearchScreen extends StatefulWidget {
-  const TestSearchScreen({super.key});
+  final int? slotIndex;        // null = regular search, number = team building
+  final Team? currentTeam;     // current team state
+
+  const TestSearchScreen({
+    super.key,
+    this.slotIndex,
+    this.currentTeam,
+  });
 
   @override
   State<TestSearchScreen> createState() => _TestSearchScreen();
@@ -18,6 +25,7 @@ class _TestSearchScreen extends State<TestSearchScreen> {
   List<Pokemon> _searchResults = [];
   bool _isLoading = false;
   String? _errorMessage;
+  bool get _isTeamBuildingMode => widget.slotIndex != null;
 
   @override
   void initState() {
@@ -84,7 +92,10 @@ class _TestSearchScreen extends State<TestSearchScreen> {
  Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: const Text('Pokemon Search Test'),
+      title: Text(_isTeamBuildingMode
+          ? 'Choose Pokemon'
+          : 'Search Pokemon'
+      ),
     ),
     body: Padding(
       padding: const EdgeInsets.all(16.0),
@@ -118,6 +129,9 @@ class _TestSearchScreen extends State<TestSearchScreen> {
                 searchResults: _searchResults,
                 isLoading: _isLoading,
                 errorMessage: _errorMessage,
+                isTeamBuildingMode: _isTeamBuildingMode,
+                currentTeam: widget.currentTeam,
+                onPokemonSelected: _onPokemonSelected,
               )
           )
         ],
@@ -125,4 +139,15 @@ class _TestSearchScreen extends State<TestSearchScreen> {
     )
   );
  }
+  void _onPokemonSelected(Pokemon pokemon) {
+    if (_isTeamBuildingMode) {
+      // Return the Pokemon to the team setup screen
+      Navigator.pop(context, pokemon);
+    } else {
+      // Regular mode - just show a message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Added ${pokemon.name} to team!')),
+      );
+    }
+  }
 }

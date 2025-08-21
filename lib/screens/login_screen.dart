@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pokemon_team_builder/screens/dashboard_screen.dart';
 import 'package:pokemon_team_builder/screens/signup_screen.dart';
 import '../services/auth_service.dart';
 import 'test_search_screen.dart';
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(content: Text('Welcome, ${user.email}!'),
           backgroundColor: Colors.lightBlue,),
         );
-        // TODO: go to dashboard screen
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
       } else {
         // Fail
         ScaffoldMessenger.of(context).showSnackBar(

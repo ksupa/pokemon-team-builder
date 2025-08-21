@@ -3,8 +3,17 @@ import '../models/pokemon.dart';
 
 class PokemonCard extends StatelessWidget {
  final Pokemon pokemon;
+ final bool isTeamBuildingMode;
+ final bool isAlreadyInTeam;
+ final VoidCallback? onAddToTeam;
 
- const PokemonCard({super.key, required this.pokemon});
+ const PokemonCard({
+   super.key,
+   required this.pokemon,
+   this.isTeamBuildingMode = false,
+   this.isAlreadyInTeam = false,
+   this.onAddToTeam,
+ });
 
  Color _getTypeColor(String type) {
    switch (type.toLowerCase()) {
@@ -49,7 +58,7 @@ class PokemonCard extends StatelessWidget {
 
  Widget _buildTypeChip(String type) {
    return Container(
-     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
      decoration: BoxDecoration(
        color: Colors.white,
        border: Border.all(color: _getTypeColor(type), width: 2),
@@ -70,36 +79,62 @@ class PokemonCard extends StatelessWidget {
   Widget build(BuildContext context) {
    return Card(
      margin: const EdgeInsets.only(bottom: 12),
-     child: Column(
-       crossAxisAlignment: CrossAxisAlignment.center,
+     child: Stack(
        children: [
-         // Pokemon sprite
-         Image.network(
-           pokemon.sprite,
-           height: 100,
-           width: 100,
-           errorBuilder: (context, error, stackTrace) {
-             return const Icon(Icons.image_not_supported, size: 100);
-           },
-         ),
+         Padding(
+           padding: const EdgeInsets.all(16),
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.center,
+             children: [
+               // Pokemon sprite
+               Image.network(
+                 pokemon.sprite,
+                 height: 100,
+                 width: 100,
+                 errorBuilder: (context, error, stackTrace) {
+                   return const Icon(Icons.image_not_supported, size: 100);
+                 },
+               ),
 
-         const SizedBox(height: 12),
+               // Pokemon name
+               Text(
+                 pokemon.name.toUpperCase(),
+                 style: const TextStyle(
+                   fontSize: 18,
+                   fontWeight: FontWeight.bold,
+                 ),
+               ),
 
-         // Pokemon name
-         Text(
-           pokemon.name.toUpperCase(),
-           style: const TextStyle(
-             fontSize: 18,
-             fontWeight: FontWeight.bold,
+               const SizedBox(height: 8),
+
+               // Pokemon types with colors
+               SizedBox(
+                 height: 32,
+                 child: Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: pokemon.types.map((type) => Padding(
+                     padding: const EdgeInsets.symmetric(horizontal: 4),
+                     child: _buildTypeChip(type),
+                   )).toList(),
+                 ),
+               ),
+
+               const SizedBox(height: 12),
+             ],
            ),
          ),
-
-         const SizedBox(height: 8),
-
-         // Pokemon types with colors
-         Wrap(
-           spacing: 8,
-           children: pokemon.types.map((type) => _buildTypeChip(type)).toList(),
+         // Add to Team button in top right corner
+         Positioned(
+           top: 12,
+           right: 12,
+           child: IconButton(
+             onPressed: onAddToTeam,
+             icon: Icon(isAlreadyInTeam ? Icons.check_circle : Icons.add_box),
+             style: IconButton.styleFrom(
+               foregroundColor: isAlreadyInTeam ? Colors.grey : Colors.indigo,
+               iconSize: 35,
+             ),
+           ),
          ),
        ]
      )
