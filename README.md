@@ -1,7 +1,4 @@
 # Pokemon Team Builder
-
-A Flutter mobile application that allows users to create and manage Pokemon teams using real Pokemon data from the PokeAPI. Users can authenticate, search for Pokemon, build teams of up to 6 Pokemon, and save multiple teams to the cloud.
-
 ## Features
 
 ### Authentication
